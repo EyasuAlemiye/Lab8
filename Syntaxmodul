@@ -1,0 +1,47 @@
+#wordqueue är linkedQ med peek-metod som vi själva ska skapa.
+# Syntaxkontroll
+
+from wordqueue import WordQueue
+
+class Grammatikfel(Exception):
+    pass
+
+def readMolekyl(q):
+    readAtom(q)
+    if q.peek()=='.': #I nuläget oklart vad strängen t.h om == ska vara för något.
+        q.dequeue()
+    else:
+        readNum(q)
+
+def readAtom(q):
+    readcapLetter(q)
+    readletter(q)
+
+def readcapLetter(q):
+    capLetter=q.dequeue()
+    templist=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    for capelement in templist:
+        if capLetter==capelement:
+            return
+    raise Grammatikfel('Saknad stor bokstav vid radslutet: ' + capLetter)   
+
+def readletter(q):
+    letter=q.dequeue()
+    templist=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    litenbokstavlista=[storbokstav.lower for storbokstav in templist]
+    for litenbokstav in litenbokstavlista:
+        if letter==litenbokstav:
+            return
+    raise Grammatikfel('Saknad liten bokstav vid radslutet: '+ letter)  
+
+def readNum(q):
+    nummer=q.dequeue()
+    nummerlista=range(1,100000000,1) #egentligen oändlig men sätter en gräns till 10^8 s.a vi har en lista med heltal mellan 1 och 10^8
+    for heltal in nummerlista:
+        if nummer>=2:
+            if nummer==heltal:
+                return       
+    raise Grammatikfel('För litet tal vid radslutet: '+ heltal)
+
+
+
