@@ -3,7 +3,7 @@
 
 from wordqueue import WordQueue
 
-class Grammatikfel(Exception):
+class Molekylfel(Exception):
     pass
 
 def readMolekyl(q):
@@ -23,7 +23,7 @@ def readcapLetter(q):
     for capelement in templist:
         if capLetter==capelement:
             return
-    raise Grammatikfel('Saknad stor bokstav vid radslutet: ' + capLetter)   
+    raise Molekylfel('Saknad stor bokstav vid radslutet: ' + capLetter)   
 
 def readletter(q):
     letter=q.dequeue()
@@ -32,7 +32,7 @@ def readletter(q):
     for litenbokstav in litenbokstavlista:
         if letter==litenbokstav:
             return
-    raise Grammatikfel('Saknad liten bokstav vid radslutet: '+ letter)  
+    raise Molekylfel('Saknad liten bokstav vid radslutet: '+ letter)  
 
 def readNum(q):
     nummer=q.dequeue()
@@ -41,7 +41,7 @@ def readNum(q):
         if nummer>=2:
             if nummer==heltal:
                 return       
-    raise Grammatikfel('För litet tal vid radslutet: '+ heltal)
+    raise Molekylfel('För litet tal vid radslutet: '+ heltal)
 
 
 
