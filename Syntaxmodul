@@ -1,47 +1,110 @@
 #wordqueue är linkedQ med peek-metod som vi själva ska skapa.
-# Syntaxkontroll
-
+#Syntaxkontroll
 from wordqueue import WordQueue
 
-class Molekylfel(Exception):
+class Molekylfel(Exception): #Mer eller mindre samma som kodexemplet i föreläsning
     pass
 
-def readMolekyl(q):
-    readAtom(q)
+
+def Kollagrammatiken(mening):
+    
+    q = lagraMolekylen(mening) #Kön blir A G 3 .
+    try:                                  
+        readMolekyl(q)                #Anropar med kön: blir A G 3 .                 
+        return "Följer syntaxen!"     
+    except Molekylfel as fel:                            
+        return str(fel) #+ " före " + str(q)
+    
+    
+    
+
+def lagraMolekylen(mening): #Mer eller mindre samma som kodexempel i föreläsningen
+    
+    q = WordQueue() #'Fe12' #C12 #Cu12 #Fe1
+   
+    mening = list(mening) # ['F','e','1','2'] F e 12
+    for element in mening:
+        if element=='1':
+            print(element)
+            if isinstance(mening[-2],int) and isinstance(mening[-1],int): #Koden härifrån ner till rad 44 är jag började jobba på efter mötet
+                element=mening[-2]+mening[-1]
+                print(element,2)
+                mening.remove('1')
+                mening.pop(-1)
+                mening.append(element)
+            if isinstance(mening[-2],int)  and isinstance(mening[-2],str):
+                pass
+    print(mening)
+    '''
+    while True:
+        try:
+            heltal=int(mening[-1])
+            annatheltal=int(mening[-2])
+        except TypeError:
+            heltalärsträng=str(mening[-1])
+    '''
+
+
+    for ordet in mening:
+        q.enqueue(ordet) #Kön blir: A G 3
+    q.enqueue(".") #Kön blir A G 3 .
+    return q
+    
+    
+
+
+def readMolekyl(q): #Mer eller mindre samma som kodexempel i föreläsningen
+    readAtom(q) #Anropar med kön: blir A G 3 .  
     if q.peek()=='.': #I nuläget oklart vad strängen t.h om == ska vara för något.
         q.dequeue()
     else:
         readNum(q)
 
-def readAtom(q):
+def readAtom(q): #Mer eller mindre samma som kodexempel i föreläsning
     readcapLetter(q)
     readletter(q)
 
 def readcapLetter(q):
+    
     capLetter=q.dequeue()
-    templist=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-    for capelement in templist:
+    storbokstavlista=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    for capelement in storbokstavlista:
         if capLetter==capelement:
             return
     raise Molekylfel('Saknad stor bokstav vid radslutet: ' + capLetter)   
-
+    
+    
 def readletter(q):
+    
     letter=q.dequeue()
-    templist=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-    litenbokstavlista=[storbokstav.lower for storbokstav in templist]
-    for litenbokstav in litenbokstavlista:
+    storbokstavlista=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+    litenbokstavlista=[]
+    for storbokstav in storbokstavlista:
+        litenbokstav=storbokstav.lower()
+        litenbokstavlista.append(litenbokstav)
+
         if letter==litenbokstav:
             return
     raise Molekylfel('Saknad liten bokstav vid radslutet: '+ letter)  
-
+    
 def readNum(q):
+    
     nummer=q.dequeue()
-    nummerlista=range(1,100000000,1) #egentligen oändlig men sätter en gräns till 10^8 s.a vi har en lista med heltal mellan 1 och 10^8
+    integernummer=int(nummer)
+    nummerlista=range(1,1000,1) #egentligen oändlig men sätter en gräns till 10^8 s.a vi har en lista med heltal mellan 1 och 10^8
+    
     for heltal in nummerlista:
-        if nummer>=2:
-            if nummer==heltal:
-                return       
-    raise Molekylfel('För litet tal vid radslutet: '+ heltal)
+        if integernummer>=2 and integernummer==heltal:# and len(nummer)>=2:
+            return       
+    raise Molekylfel('För litet tal vid radslutet: '+ nummer)
+    
 
+def main(): #Mer eller mindre samma som kodexempel i föreläsningen.
+    #q = WordQueue()
+    molekylen = input("Skriv en molekyl: ") #AG3
+    resultat = Kollagrammatiken(molekylen)
+    print(resultat)
 
+if __name__ == "__main__":
+    main()
 
