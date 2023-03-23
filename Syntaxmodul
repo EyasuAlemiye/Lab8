@@ -61,6 +61,7 @@ def readAtom(q):
             readNum(q)
         else:
             pass
+
     except ValueError:
         if isinstance(q.peek(), str):
             if q.peek()!='!':
@@ -82,6 +83,8 @@ def readcapLetter(q):
 def readletter(q):
 
     letter=q.dequeue() 
+    #a=q.dequeue()
+    #print(a,999)
     storbokstavlista=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
     litenbokstavlista=[]
     for storbokstav in storbokstavlista:
@@ -95,17 +98,25 @@ def readletter(q):
 def readNum(q):
 
     nummer=q.dequeue() 
-    if nummer==1 or q.peek()==1 or nummer==0:
+    if isinstance(q.peek(), str):
+        enhet=q.peek()
+        print(nummer, 422)
+        print(enhet, 55)
+        
+    elif nummer==1 or q.peek()==1 or nummer==0:
+        print(q.peek(),44)
         try:
             int(q.peek()) #kollar om 'peek()' går att omvandla till integer, om ja så concatenatas, annars hoppa ner.
             nummer2=q.dequeue()
             strnummer=str(nummer)
             strnummer2=str(nummer2)
-            nummer=strnummer + strnummer2
-            print(nummer, ' är det concatenerade värdet')
+            if nummer!=0:
+                nummer=strnummer + strnummer2
+                print(nummer, ' är det concatenerade värdet')
+            enhet=0
         except ValueError: 
             pass
-        
+
     nummerlista=range(1,1000,1) #egentligen oändlig men sätter en gräns till 1000 s.a vi har en lista med heltal mellan 1 och 1000
     if nummer!='#':
         for heltal in nummerlista:
@@ -119,6 +130,8 @@ def readNum(q):
 
             if int(nummer)==1 or int(nummer)==0:  
                 raise Inkorrektmolekylformat('För litet tal vid radslutet ') 
+            if isinstance(q.peek(),str):
+                readletter(q)
         
 
 
