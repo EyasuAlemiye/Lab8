@@ -2,18 +2,20 @@
 
 from wordqueue import WordQueue
 
-class Molekylfel(Exception): 
+#Tagen ur kodexempel i Föreläsning 13. Andra variablnamn
+class Inkorrektmolekylformat(Exception): 
     pass
 
-#Tagen ur kodexempel i Föreläsning 13
 
+#Tagen ur kodexempel i Föreläsning 13. Andra variablnamn
 def Kollagrammatiken(molekyl):
     q = lagraMolekylen(molekyl) 
     try:                                  
         readMolekyl(q)                 
-        return "Följer syntaxen!"     
-    except Molekylfel as fel:                            
-        return str(fel)     
+        return "Formeln är syntaktiskt korrekt"     
+    except Inkorrektmolekylformat as fel:                            
+        return str(fel)  
+   
 
 def lagraMolekylen(molekyl): 
     
@@ -35,21 +37,21 @@ def lagraMolekylen(molekyl):
     #Tagen från kodexemplet ur Föreläsning 13. Andra variabelnamn
     for enhet in molekyl:
         q.enqueue(enhet) 
-    q.enqueue(".")  
+    q.enqueue("!")  
     return q
     
 
 
-def readMolekyl(q): #Mer eller mindre samma som kodexempel i föreläsningen
+def readMolekyl(q): #Kontrollera
    
     readAtom(q)  
     if isinstance(q.peek(),int):
-            readNum(q) 
-    if isinstance(q.peek(),str) and q.peek()!='.':
-            readletter(q) 
-            readNum(q)
+        readNum(q) 
+    if isinstance(q.peek(),str) and q.peek()!='!':
+        readletter(q) 
+        readNum(q)
     if q.isEmpty():
-            return
+        return
 
 def readAtom(q):  
     readcapLetter(q) 
@@ -61,7 +63,7 @@ def readAtom(q):
             pass
     except ValueError:
         if isinstance(q.peek(), str):
-            if q.peek()!='.':
+            if q.peek()!='!':
                 readletter(q)
 
     
@@ -70,11 +72,12 @@ def readcapLetter(q):
     capLetter=q.dequeue()
     print(capLetter, ' Är det utprintade värdet')
     storbokstavlista=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-    for capelement in storbokstavlista:
-        if capLetter==capelement:
-            return
-    raise Molekylfel('Saknad stor bokstav vid radslutet: ' + capLetter)   
-    
+    if capLetter!='#':
+        for capelement in storbokstavlista:
+            if capLetter==capelement:
+                return
+        raise Inkorrektmolekylformat('Saknad stor bokstav vid radslutet ' + str(capLetter))   
+        
     
 def readletter(q):
 
@@ -87,7 +90,7 @@ def readletter(q):
 
         if letter==litenbokstav:
             return
-    raise Molekylfel('Saknad liten bokstav vid radslutet: '+ letter)  
+    raise Inkorrektmolekylformat('Saknad liten bokstav vid radslutet: '+ str(letter))  
     
 def readNum(q):
 
@@ -99,25 +102,24 @@ def readNum(q):
             strnummer=str(nummer)
             strnummer2=str(nummer2)
             nummer=strnummer + strnummer2
-            print(nummer, 'Konkatektenr')
-        except ValueError: # '.'
+            print(nummer, ' är det concatenerade värdet')
+        except ValueError: 
             pass
         
-    nummerlista=range(1,1000,1) #egentligen oändlig men sätter en gräns till 10^8 s.a vi har en lista med heltal mellan 1 och 10^8
-    
-    for heltal in nummerlista:
-        try:
-            #if q.peek()!='.':
-            #    nummer2=q.dequeue()
-               
-            if int(nummer)>=2 and int(nummer)==heltal and q.peek()=='.': 
-                return 
-        except ValueError:
-            pass
+    nummerlista=range(1,1000,1) #egentligen oändlig men sätter en gräns till 1000 s.a vi har en lista med heltal mellan 1 och 1000
+    if nummer!='#':
+        for heltal in nummerlista:
+            try:
+                
+                if int(nummer)>=2 and int(nummer)==heltal and q.peek()=='!': 
+                    return 
+                
+            except ValueError:
+                pass
 
-        if int(nummer)==1 or int(nummer)==0:  
-            raise Molekylfel('För litet tal vid radslutet: '+ str(nummer))
-    
+            if int(nummer)==1 or int(nummer)==0:  
+                raise Inkorrektmolekylformat('För litet tal vid radslutet ') 
+        
 
 
 def main(): #Kodexempel från föreläsning 13. Andra variabelnamn.
