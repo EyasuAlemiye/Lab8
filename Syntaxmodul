@@ -1,72 +1,74 @@
-#wordqueue är linkedQ med peek-metod som vi själva ska skapa.
 #Syntaxkontroll
+
 from wordqueue import WordQueue
 
-class Molekylfel(Exception): #Mer eller mindre samma som kodexemplet i föreläsning
+class Molekylfel(Exception): 
     pass
 
+#Tagen ur kodexempel i Föreläsning 13
 
-def Kollagrammatiken(mening):
-    
-    q = lagraMolekylen(mening) #Kön blir A G 3 .
+def Kollagrammatiken(molekyl):
+    q = lagraMolekylen(molekyl) 
     try:                                  
-        readMolekyl(q)                #Anropar med kön: blir A G 3 .                 
+        readMolekyl(q)                 
         return "Följer syntaxen!"     
     except Molekylfel as fel:                            
-        return str(fel) #+ " före " + str(q)
-    
-    
-    
+        return str(fel)     
 
-def lagraMolekylen(mening): #Mer eller mindre samma som kodexempel i föreläsningen
+def lagraMolekylen(molekyl): 
     
-    q = WordQueue() #'Fe12' #C12 #Cu12 #Fe1
-   
-    mening = list(mening) # ['F','e','1','2'] F e 12
-    for element in mening:
-        if element=='1':
-            print(element)
-            if isinstance(mening[-2],int) and isinstance(mening[-1],int): #Koden härifrån ner till rad 44 är jag började jobba på efter mötet
-                element=mening[-2]+mening[-1]
-                print(element,2)
-                mening.remove('1')
-                mening.pop(-1)
-                mening.append(element)
-            if isinstance(mening[-2],int)  and isinstance(mening[-2],str):
-                pass
-    print(mening)
-    '''
-    while True:
+    q = WordQueue() #Skapar kö
+
+    molekyl = list(molekyl)  
+  
+    for i in range(len(molekyl)):
+        element=molekyl[i]
         try:
-            heltal=int(mening[-1])
-            annatheltal=int(mening[-2])
-        except TypeError:
-            heltalärsträng=str(mening[-1])
-    '''
-
-
-    for ordet in mening:
-        q.enqueue(ordet) #Kön blir: A G 3
-    q.enqueue(".") #Kön blir A G 3 .
-    return q
+            korrektelement=int(element)  
+            if isinstance(korrektelement,int):
+                molekyl[i]=korrektelement
+                continue
+                
+        except ValueError:
+            continue
     
+    #Tagen från kodexemplet ur Föreläsning 13. Andra variabelnamn
+    for enhet in molekyl:
+        q.enqueue(enhet) 
+    q.enqueue(".")  
+    return q
     
 
 
 def readMolekyl(q): #Mer eller mindre samma som kodexempel i föreläsningen
-    readAtom(q) #Anropar med kön: blir A G 3 .  
-    if q.peek()=='.': #I nuläget oklart vad strängen t.h om == ska vara för något.
-        q.dequeue()
-    else:
-        readNum(q)
+   
+    readAtom(q)  
+    if isinstance(q.peek(),int):
+            readNum(q) 
+    if isinstance(q.peek(),str) and q.peek()!='.':
+            readletter(q) 
+            readNum(q)
+    if q.isEmpty():
+            return
 
-def readAtom(q): #Mer eller mindre samma som kodexempel i föreläsning
-    readcapLetter(q)
-    readletter(q)
+def readAtom(q):  
+    readcapLetter(q) 
+    try:
+        provvariabel=int(q.peek()) 
+        if isinstance(provvariabel,int): 
+            readNum(q)
+        else:
+            pass
+    except ValueError:
+        if isinstance(q.peek(), str):
+            if q.peek()!='.':
+                readletter(q)
 
+    
 def readcapLetter(q):
     
     capLetter=q.dequeue()
+    print(capLetter, ' Är det utprintade värdet')
     storbokstavlista=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
     for capelement in storbokstavlista:
         if capLetter==capelement:
@@ -75,8 +77,8 @@ def readcapLetter(q):
     
     
 def readletter(q):
-    
-    letter=q.dequeue()
+
+    letter=q.dequeue() 
     storbokstavlista=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
     litenbokstavlista=[]
     for storbokstav in storbokstavlista:
@@ -88,23 +90,45 @@ def readletter(q):
     raise Molekylfel('Saknad liten bokstav vid radslutet: '+ letter)  
     
 def readNum(q):
-    
-    nummer=q.dequeue()
-    integernummer=int(nummer)
+
+    nummer=q.dequeue() 
+    if nummer==1 or q.peek()==1 or nummer==0:
+        try:
+            int(q.peek()) #kollar om 'peek()' går att omvandla till integer, om ja så concatenatas, annars hoppa ner.
+            nummer2=q.dequeue()
+            strnummer=str(nummer)
+            strnummer2=str(nummer2)
+            nummer=strnummer + strnummer2
+            print(nummer, 'Konkatektenr')
+        except ValueError: # '.'
+            pass
+        
     nummerlista=range(1,1000,1) #egentligen oändlig men sätter en gräns till 10^8 s.a vi har en lista med heltal mellan 1 och 10^8
     
     for heltal in nummerlista:
-        if integernummer>=2 and integernummer==heltal:# and len(nummer)>=2:
-            return       
-    raise Molekylfel('För litet tal vid radslutet: '+ nummer)
+        try:
+            #if q.peek()!='.':
+            #    nummer2=q.dequeue()
+               
+            if int(nummer)>=2 and int(nummer)==heltal and q.peek()=='.': 
+                return 
+        except ValueError:
+            pass
+
+        if int(nummer)==1 or int(nummer)==0:  
+            raise Molekylfel('För litet tal vid radslutet: '+ str(nummer))
     
 
-def main(): #Mer eller mindre samma som kodexempel i föreläsningen.
-    #q = WordQueue()
-    molekylen = input("Skriv en molekyl: ") #AG3
-    resultat = Kollagrammatiken(molekylen)
-    print(resultat)
+
+def main(): #Kodexempel från föreläsning 13. Andra variabelnamn.
+    molekylen = input("Skriv en molekyl: ")  #Pb10
+    utfallet = Kollagrammatiken(molekylen)
+    print(utfallet)
 
 if __name__ == "__main__":
     main()
+
+
+
+
 
